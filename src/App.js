@@ -1,18 +1,19 @@
 import { nanoid } from "nanoid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import React, { useState } from "react";
 
 import "./App.css";
 import ContactForm from "./components/ContactForm";
 import ContactList from "./components/ContactList";
 import Filter from "./components/Filter";
 import Notification from "./components/Notification";
+
 import useLocalStorage from "./hooks/useLocalStorage";
+import useFilter from "./hooks/useFilter";
 
 function App() {
   const [contacts, setContacts] = useLocalStorage();
-  const [filter, setFilter] = useState("");
+  const [filter, updateFilter, getFilteredContacs] = useFilter();
 
   const addNewContact = (name, number) => {
     if (contacts.find((el) => el.name === name)) {
@@ -25,18 +26,7 @@ function App() {
     setContacts(contacts.filter((el) => el.id !== id));
   };
 
-  const updateFilter = (e) => {
-    const value = e.currentTarget.value;
-    setFilter(value);
-  };
-
-  const getFilteredContacs = () => {
-    return contacts.filter((e) =>
-      e.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  };
-
-  const contactsToShow = getFilteredContacs();
+  const contactsToShow = getFilteredContacs(contacts);
   const noContactsAdded = "You seem not to have any contacts yet";
 
   return (

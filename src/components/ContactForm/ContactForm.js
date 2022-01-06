@@ -1,13 +1,9 @@
 import React, { useReducer } from "react";
 import PropTypes from "prop-types";
 import s from "./ContactForm.module.css";
+import initialState from "./initialState";
 
 function ContactForm({ addNewContact }) {
-  const initialState = {
-    name: "",
-    number: "",
-  };
-
   const [state, dispatch] = useReducer(handleChange, initialState);
 
   function handleChange(state, action) {
