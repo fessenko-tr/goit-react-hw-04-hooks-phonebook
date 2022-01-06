@@ -1,29 +1,29 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import PropTypes from "prop-types";
 import s from "./ContactForm.module.css";
 
 function ContactForm({ addNewContact }) {
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
+  const initialState = {
+    name: "",
+    number: "",
+  };
 
-  function handleChange(e) {
-    const { name, value } = e.currentTarget;
-    if (name === "name") {
-      setName(value);
-    } else if (name === "number") {
-      setNumber(value);
+  const [state, dispatch] = useReducer(handleChange, initialState);
+
+  function handleChange(state, action) {
+    const { option, value } = action;
+
+    if (option === "reset") {
+      return initialState;
     }
+
+    return { ...state, [option]: value };
   }
 
   function submitNewContact(e) {
     e.preventDefault();
-    addNewContact(name, number);
-    clearForm();
-  }
-
-  function clearForm() {
-    setName("");
-    setNumber("");
+    addNewContact(state.name, state.number);
+    dispatch({ option: "reset" });
   }
 
   return (
@@ -39,8 +39,11 @@ function ContactForm({ addNewContact }) {
         pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
         title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
         required
-        value={name}
-        onChange={handleChange}
+        value={state.name}
+        onChange={(e) => {
+          const { name, value } = e.currentTarget;
+          dispatch({ option: name, value });
+        }}
       />
       <label className={s.label} htmlFor="number">
         Number
@@ -53,8 +56,11 @@ function ContactForm({ addNewContact }) {
         pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required
-        value={number}
-        onChange={handleChange}
+        value={state.number}
+        onChange={(e) => {
+          const { name, value } = e.currentTarget;
+          dispatch({ option: name, value });
+        }}
       />
 
       <button type="submit">Add contact</button>
