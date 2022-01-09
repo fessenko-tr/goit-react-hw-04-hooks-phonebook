@@ -1,5 +1,4 @@
-import { nanoid } from "nanoid";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
@@ -8,23 +7,12 @@ import ContactList from "./components/ContactList";
 import Filter from "./components/Filter";
 import Notification from "./components/Notification";
 
-import useLocalStorage from "./hooks/useLocalStorage";
 import useFilter from "./hooks/useFilter";
+import useContacts from "./hooks/useContacts";
 
 function App() {
-  const [contacts, setContacts] = useLocalStorage();
+  const [contacts, addNewContact, deleteContact] = useContacts();
   const [filter, updateFilter, getFilteredContacs] = useFilter();
-
-  const addNewContact = (name, number) => {
-    if (contacts.find((el) => el.name === name)) {
-      return toast.info(`${name} is already in contacts`);
-    }
-    setContacts([...contacts, { id: nanoid(), name, number }]);
-  };
-
-  const deleteContact = (id) => {
-    setContacts(contacts.filter((el) => el.id !== id));
-  };
 
   const contactsToShow = getFilteredContacs(contacts);
   const noContactsAdded = "You seem not to have any contacts yet";
