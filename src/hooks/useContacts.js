@@ -6,7 +6,11 @@ function useContacts() {
   const [contacts, setContacts] = useLocalStorage("contacts");
 
   const addNewContact = (name, number) => {
-    if (contacts.find((el) => el.name === name)) {
+    const isAlreadyAdded = contacts.some(
+      (el) => el.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (isAlreadyAdded) {
       return toast.info(`${name} is already in contacts`);
     }
     setContacts([...contacts, { id: nanoid(), name, number }]);
